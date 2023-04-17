@@ -29,7 +29,7 @@ const Confirmation = ({setAuth}) => {
       };
 
       console.log(body);
-      if(sessionId != false) {
+      if(sessionId !== false) {
         const response = await fetch(`/api/enrollments/${id}/sessions/${sessionId}`, {
           method: 'PATCH',
           headers: {

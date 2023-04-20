@@ -12,8 +12,8 @@ const ContinueCreateAccount = ({setAuth}) => {
     password: location.state.pw,
     nickname: "",
     email: "",
-    age: 0,
-    zipcode: 0
+    age: 14,
+    zipcode: ""
   });
 
   const { username, password, nickname, email, age, zipcode } = inputs;
@@ -64,12 +64,16 @@ const ContinueCreateAccount = ({setAuth}) => {
       <h1>Create Account</h1>
       <div className="username">
         <div className="item">
+          <p>Username:</p>
+          <input id="username" type="text" name="username" value={username} onChange={e => onChange(e)}></input>
+        </div>
+        <div className="item">
           <p>Nickname:</p>
           <input id="nickname" type="text" name="nickname" value={nickname} onChange={e => onChange(e)}></input>
         </div>
         <div className="item">
           <p>Email:</p>
-          <input id="email" type="text" name="email" value={email} onChange={e => onChange(e)}></input>
+          <input id="email" type="email" name="email" value={email} onChange={e => onChange(e)}></input>
         </div>
         <div className="item">
           <p>Age:</p>
@@ -96,7 +100,7 @@ const ContinueCreateAccount = ({setAuth}) => {
         </div>
         <div className="item">
           <p>Zip Code:</p>
-          <input id="zipcode" type="text" name="zipcode" value={zipcode} onChange={e => onChange(e)}></input>
+          <input id="zipcode" type="number" onInput={(e) => e.target.value = e.target.value.slice(0, 5)} name="zipcode" value={zipcode} onChange={e => onChange(e)}></input>
         </div>
         <div className="item">
           <p>Initial Question Set:</p>

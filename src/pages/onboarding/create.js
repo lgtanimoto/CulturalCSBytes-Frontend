@@ -39,11 +39,11 @@ const CreateAccount = ({setAuth}) => {
         </div>
         <div className="item">
           <p>Password:</p>
-          <input id="password" type="text"></input>
+          <input id="password" type="password"></input>
         </div>
         <div className="item">
           <p>Confirm Password:</p>
-          <input id="confirm-password" type="text"></input>
+          <input id="confirm-password" type="password"></input>
         </div>
       </div>
       <div className='item'>

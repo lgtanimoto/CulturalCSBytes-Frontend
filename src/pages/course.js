@@ -20,11 +20,11 @@ class Course extends Component {
                 <p>Completed: {this.props.completed}</p>
                 <p>High Score: {this.props.high}</p>
                 <p>Status: {this.props.status}</p>
-                <button type="button" onClick={() => this.props.statsClick(this.props.id, this.props.name)}>
+                <button type="button" disabled={this.props.status === "Not started"} onClick={() => this.props.statsClick(this.props.id, this.props.name)}>
                     Stats
                 </button>
                 <button type="button" onClick={() => this.props.continueClick(this.props.id, this.props.name)}>
-                    Continue
+                    {this.props.status === "Not started" ? 'Start' : 'Continue'}
                 </button>
             </div>
         )

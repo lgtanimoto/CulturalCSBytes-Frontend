@@ -2,79 +2,134 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
 import '../questions.css';
 
-const ContinueCreateAccount = ({setAuth}) => {
-
+const ContinueCreateAccount = ({setAuth}) => { 
+  
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [inputs, setInputs] = useState({
-    username: location.state.name,
-    password: location.state.pw,
-    nickname: "",
-    email: "",
-    age: 0,
-    zipcode: 0
-  });
-
-  const { username, password, nickname, email, age, zipcode } = inputs;
-
-  const onChange = e => {
-    setInputs({ ...inputs, [e.target.name]: e.target.value });
-  };
+  // creating a useState for each input 
+  const [username, setUsename] = useState(location.state.name);
+  const [password, setPassword] = useState(location.state.pw);
+  const [nickname, setNickname] = useState("");
+  const [email, setEmail] = useState("");
+  const [age, setAge] = useState(14);
+  const [zipcode, setZipcode] = useState("");
+  
+  // updating user's username, password, nickname, email, ... after user inputs data
+  const handleUsernameChange = (event) => {
+    setUsename(event.target.value);
+  }
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+  }
+  const handleNicknameChange = (event) => {
+    setNickname(event.target.value);
+  }
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value);
+  }
+  const handleAgeChange = (event) => {
+    setAge(event.target.value);
+  }
+  const handleZipcodeChange = (event) => {
+    setZipcode(event.target.value);
+  }
 
   const goHome = () => {
     navigate("/home");
   }
 
-  const continueClick = async e => {
-    e.preventDefault();
-    
+  // handling continue button click event 
+  const continueClick = async (event) => {
+    event.preventDefault();
+
     try {
-      const body = {username,
-        password,
-        nickname,
-        email,
-        age,
-        zipcode
+      const body = {
+        username, 
+        password, 
+        nickname, 
+        email, 
+        age, 
+        zipcode, 
+        name: location.state.name, 
+        pw: location.state.pw
       };
 
-      const response = await fetch("/api/authentication/register", {
+      const res = await fetch("/api/authentication/register", {
         method: "POST",
         headers: {"Content-type": "application/json"},
         body: JSON.stringify(body)
       });
 
-      const parseRes = await response.json();
-
+      const parseRes = await res.json()
       localStorage.setItem("token", parseRes.token);
-
       setAuth(true);
+      console.log(parseRes)
 
-      console.log(parseRes);
+      // need to get the id and initialize it 
+
+  // when this section is uncommented, 
+  // the navigation to enroll page throws an error probably b/c data isn't properly being transfereed from continue-create.js page to enroll.js page
+    // still need to navigate to course-enrollment.js page instead of enroll.js page
+      // navigate("/enroll", {
+      //   state: {
+      //     username, nickname: document.getElementById("nickname").value,
+      //   },
+      // });
+
     } catch (err) {
-      console.error(err.message);
+      console.log(err.message);
     }
+  };
 
-    // TODO: store info in back end from location.state.name and location.state.pw and this screen input
-    //navigate("/course-enrollments", {state: {username: location.state.name, nickname: document.getElementById("nickname").value}});
+
+  // temporary will remove  
+  const cardCSS = {
+    label: {
+      margin: "28px 0px 16px"
+    }
   }
 
-  return(
-    <div className='Center'>
-      <h1>Create Account</h1>
-      <div className="username">
+  const usernameSection = () => {
+    return (
+      <>
         <div className="item">
-          <p>Nickname:</p>
-          <input id="nickname" type="text" name="nickname" value={nickname} onChange={e => onChange(e)}></input>
+          <label style={cardCSS.label}>Username:</label>
+          <input id="username" type="text" name="username" value={username} onChange={handleUsernameChange}></input>
         </div>
+      </>
+    )
+  }
+
+  const nicknameSection = () => {
+    return (
+      <>
         <div className="item">
-          <p>Email:</p>
-          <input id="email" type="text" name="email" value={email} onChange={e => onChange(e)}></input>
+          <label style={cardCSS.label}>Nickname:</label>
+          <input id="nickname" type="text" name="nickname" value={nickname} onChange={handleNicknameChange}></input>
         </div>
+      </>
+    )
+  }
+
+  const emailSection = () => {
+    return (
+      <>
         <div className="item">
-          <p>Age:</p>
+          <label style={cardCSS.label}>Email:</label>
+          <input id="email" type="email" name="email" placeholder="sophie@example.com" value={email} onChange={handleEmailChange}></input>
+        </div>
+      </>
+    )
+  }
+
+  const ageSection = () => {
+    return (
+      <>
+        <div className="item">
+          <label style={cardCSS.label}>Age:</label>
           <div className="dropdown">
-            <select name="age" id="age" value={age} onChange={e => onChange(e)}>
+            <select name="age" id="age" value={age} onChange={handleAgeChange}>
                 <option value="less-than-8">Younger than 8</option>
                 <option value="8">8</option>
                 <option value="9">9</option>
@@ -94,26 +149,61 @@ const ContinueCreateAccount = ({setAuth}) => {
             </select>
           </div>
         </div>
+      </>
+    )
+  }
+
+  const zipcodeSection = () => {
+    return (
+      <>
         <div className="item">
-          <p>Zip Code:</p>
-          <input id="zipcode" type="text" name="zipcode" value={zipcode} onChange={e => onChange(e)}></input>
+          <label style={cardCSS.label}>Zip Code:</label>
+          <input id="zipcode" type="text" pattern="[0-9]{5}" name="zipcode" placeholder="Five digit zip code" value={zipcode} onChange={handleZipcodeChange}></input>
         </div>
+      </>
+    )
+  }
+
+  const questionSetSection = () => {
+    return (
+      <>
         <div className="item">
-          <p>Initial Question Set:</p>
-          <div className='dropdown'>
-            <select name="sets" id="sets">
-                <option value="cs_principle_basics">Computer Science Principle Basics</option>
-            </select>
-          </div>
+          <label style={cardCSS.label}>Initial Question Set:</label>
+          <input readOnly="readonly" value="Computer Science Principle Basics" variant="outlined" label="Disabled Dropdown"/>
         </div>
+      </>
+    )
+  }
+
+  const buttonSection = () => {
+    return (
+      <>
+        <div className='item'>
+          <button onClick={goHome}>Cancel</button>
+          <button onClick={continueClick}>Continue</button>
+        </div>
+      </>
+    )
+  }
+
+
+  return (
+    <form onSubmit={continueClick}>
+      <div className='Center'>
+        <h1>Create Account</h1>
+        <div className="username">
+          {usernameSection()}
+          {nicknameSection()}
+          {emailSection()}
+          {ageSection()}
+          {zipcodeSection()}
+          {questionSetSection()}
+        </div>
+          {buttonSection()}
+        <p id="feedback"></p>
       </div>
-      <div className='item'>
-        <button onClick={goHome}>Cancel</button>
-        <button onClick={continueClick}>Continue</button>
-      </div>
-      <p id="feedback"></p>
-    </div>
-  );
-}
+    </form>
+  ); 
+};
 
 export default ContinueCreateAccount;

@@ -95,8 +95,8 @@ const ContinueCreateAccount = ({setAuth}) => {
     return (
       <>
         <div className="item">
-          <label style={cardCSS.label}>Username:</label>
-          <input id="username" type="text" name="username" value={username} onChange={handleUsernameChange}></input>
+          <label for="username" style={cardCSS.label}>Username:</label>
+          <input type="text" id="username" name="username" value={username} onChange={handleUsernameChange}></input>
         </div>
       </>
     )
@@ -106,8 +106,8 @@ const ContinueCreateAccount = ({setAuth}) => {
     return (
       <>
         <div className="item">
-          <label style={cardCSS.label}>Nickname:</label>
-          <input id="nickname" type="text" name="nickname" value={nickname} onChange={handleNicknameChange}></input>
+          <label for="nickname" style={cardCSS.label}>Nickname:</label>
+          <input type="text" id="nickname" name="nickname" value={nickname} onChange={handleNicknameChange}></input>
         </div>
       </>
     )
@@ -117,8 +117,8 @@ const ContinueCreateAccount = ({setAuth}) => {
     return (
       <>
         <div className="item">
-          <label style={cardCSS.label}>Email:</label>
-          <input id="email" type="email" name="email" placeholder="sophie@example.com" value={email} onChange={handleEmailChange}></input>
+          <label for="email" style={cardCSS.label}>Email:</label>
+          <input type="email" id="email" name="email" placeholder="sophie@example.com" value={email} onChange={handleEmailChange}></input>
         </div>
       </>
     )
@@ -128,7 +128,7 @@ const ContinueCreateAccount = ({setAuth}) => {
     return (
       <>
         <div className="item">
-          <label style={cardCSS.label}>Age:</label>
+          <label for="age" style={cardCSS.label}>Age:</label>
           <div className="dropdown">
             <select name="age" id="age" value={age} onChange={handleAgeChange}>
                 <option value="less-than-8">Younger than 8</option>
@@ -158,8 +158,8 @@ const ContinueCreateAccount = ({setAuth}) => {
     return (
       <>
         <div className="item">
-          <label style={cardCSS.label}>Zip Code:</label>
-          <input id="zipcode" type="text" pattern="[0-9]{5}" name="zipcode" placeholder="Five digit zip code" value={zipcode} onChange={handleZipcodeChange}></input>
+          <label for="zipcode" style={cardCSS.label}>Zip Code:</label>
+          <input type="text" id="zipcode" pattern="[0-9]{5}" name="zipcode" placeholder="Five digit zip code" value={zipcode} onChange={handleZipcodeChange}></input>
         </div>
       </>
     )
@@ -169,8 +169,8 @@ const ContinueCreateAccount = ({setAuth}) => {
     return (
       <>
         <div className="item">
-          <label style={cardCSS.label}>Initial Question Set:</label>
-          <input readOnly="readonly" value="Computer Science Principle Basics" variant="outlined" label="Disabled Dropdown"/>
+          <label for="question" style={cardCSS.label}>Initial Question Set:</label>
+          <input id="question" readOnly="readonly" value="Computer Science Principle Basics" variant="outlined" label="Disabled Dropdown"/>
         </div>
       </>
     )

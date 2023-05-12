@@ -56,7 +56,7 @@ const Login = ({setAuth}) => {
         </div>
         <div className="item">
           <p>Password:</p>
-          <input id="password" type="text" name="password" value={password} onChange={e => onChange(e)}></input>
+          <input id="password" type="password" name="password" value={password} onChange={e => onChange(e)}></input>
         </div>
       </div>
       <div className='item'>

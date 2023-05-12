@@ -7,11 +7,13 @@ const CourseEnrollments = ({setAuth}) => {
 
   const navigate = useNavigate();
 
+  // setting the stage to grab the name, userName, and courseData
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
-
   const [courseData, setCourseData] = React.useState([]);
 
+  // async function grabbing the name from an api fetch call 
+  // and using get request to store data into respond variable
   async function getName() {
     try {
       const res = await fetch('/api/enrollments', {
@@ -19,7 +21,9 @@ const CourseEnrollments = ({setAuth}) => {
         headers: { token: localStorage.token }
       });
       
+      // respond data is now a json object stored into parseData
       const parseData = await res.json();
+      console.log(parseData)
 
       setName(parseData.nickname);
       setUsername(parseData.username);
@@ -53,6 +57,7 @@ const CourseEnrollments = ({setAuth}) => {
     getName()
   })
 
+  // fetch's need to be inside of a useEffect(..., ....)
   async function continueClick(id, name) {
     try {
       const res = await fetch(`/api/enrollments/${id}/sessions/continue`, {
@@ -65,6 +70,7 @@ const CourseEnrollments = ({setAuth}) => {
       
       const parseData = await res.json();
 
+      // this format for checking user's info should also be in continue-create.js before navigating to enroll.js
       if(parseData.route === "new") {
         navigate("/enroll", {state: {id: id, name: name, practice: parseData.params ? true : false}});
       } else {

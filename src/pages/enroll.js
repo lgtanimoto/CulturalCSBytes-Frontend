@@ -74,7 +74,7 @@ const Enroll = ({setAuth}) => {
     }
     setAdditionalCultures(temp);
   };
-
+    
   const cancel = () => {
     navigate("/course-enrollments");
   };

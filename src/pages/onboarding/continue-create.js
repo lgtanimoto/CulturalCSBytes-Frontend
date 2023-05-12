@@ -7,6 +7,7 @@ const ContinueCreateAccount = ({setAuth}) => {
   const navigate = useNavigate();
   const location = useLocation();
 
+
   // creating a useState for each input 
   const [username, setUsename] = useState(location.state.name);
   const [password, setPassword] = useState(location.state.pw);

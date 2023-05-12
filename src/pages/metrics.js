@@ -14,7 +14,6 @@ const Metrics = ({setAuth}) => {
   const [username, setUsername] = React.useState("");
   const [nickname, setNickname] = React.useState("");
   const [sessions, setSessions] = React.useState([]);
-  const [actions, setActions] = React.useState("");
 
   async function getMetrics() {
     try {
@@ -29,7 +28,6 @@ const Metrics = ({setAuth}) => {
       setUsername(parseData.username);
       setNickname(parseData.nickname);
       setSessions(parseData.sessions);
-      setActions(parseData.actions);
 
     } catch (err) {
       console.log(err.message);

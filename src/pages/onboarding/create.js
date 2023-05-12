@@ -3,13 +3,14 @@ import { useNavigate } from "react-router-dom";
 import '../questions.css';
 
 const CreateAccount = ({setAuth}) => {
-
+  // useState should be created for username and password instead of grabbing value by it's element id
+  
   const navigate = useNavigate();
-
+  
   const goHome = () => {
     navigate("/home");
   }
-
+  
   //checks to make sure username is not blank, and is unique
   //checks to make sure the password is 8 characters or longer
   //checks to make sure passwords match
@@ -39,11 +40,11 @@ const CreateAccount = ({setAuth}) => {
         </div>
         <div className="item">
           <p>Password:</p>
-          <input id="password" type="text"></input>
+          <input id="password" type="password"></input>
         </div>
         <div className="item">
           <p>Confirm Password:</p>
-          <input id="confirm-password" type="text"></input>
+          <input id="confirm-password" type="password"></input>
         </div>
       </div>
       <div className='item'>

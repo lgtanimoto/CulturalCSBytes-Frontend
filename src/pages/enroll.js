@@ -100,10 +100,9 @@ const Enroll = ({setAuth}) => {
         <div className='item'>
           <label for="question-set-selection" style={cardCSS.label}>Question Set:</label>
             <div className='dropdown'>
-                <select name='name' id='name'>
+                <select name="question-set-selection" id="question-set-selection">
                   <option value={name}>{name}</option>
                 </select>
-                {/* <input readOnly='readonly' name='name' id='name' value={name}/> */}
             </div>
         </div>
       </>
@@ -113,13 +112,10 @@ const Enroll = ({setAuth}) => {
   const cultureSection = () => {
     return (
       <>
-      {/* error when navigation from continue-create.js page to enroll.js page
-        when its creating a new account, it seems like the cultures array is empty
-        the error it's throwing is a undefined property when reading 'map' */}
       <div className='item'>
         <label for="culture-selection" style={cardCSS.label}>Culture:</label>
           <div className='dropdown'>
-            <select value={selectedCulture} onChange={handleCultureChange}>
+            <select name="culture-selection" id="culture-selection" value={selectedCulture} onChange={handleCultureChange}>
               {cultureOptions.map((option, index) => (
                 <option key={index} value={option.name}>
                   {option.name}
@@ -136,9 +132,9 @@ const Enroll = ({setAuth}) => {
     return (
       <>
       <div className='item'>
-        <label style={cardCSS.label}>Difficulty:</label>
+        <label for="difficulty-selection" style={cardCSS.label}>Difficulty:</label>
         <div className='dropdown'>
-          <select value={selectedDifficulty} onChange={handleDifficultyChange}>
+          <select name="difficulty-selection" id="difficulty-selection" value={selectedDifficulty} onChange={handleDifficultyChange}>
             {difficultyOptions.map((option, index) => (
               <option key={index} value={option}>
                 {option}
@@ -155,9 +151,9 @@ const Enroll = ({setAuth}) => {
     return (
       <>
         <div className='item'>
-          <label style={cardCSS.label}>Additional Cultures:</label>
+          <label for="additional-culture-selection" style={cardCSS.label}>Additional Cultures:</label>
             <div className='dropdown'>
-              <select multiple={true} value={additionalCultures} onChange={(event) => handleAdditionalCultures(event.target.value)}>                
+              <select name="additional-culture-selection" id="additional-culture-selection" multiple={true} value={additionalCultures} onChange={(event) => handleAdditionalCultures(event.target.value)}>                
                 {cultureOptions.filter((option) => option.name !== selectedCulture).map((option, index) => (
                   <option key={index} value={option.name}>
                     {option.name}
@@ -169,7 +165,6 @@ const Enroll = ({setAuth}) => {
       </>
     )
   }
-
 
   const buttonSection = () => {
     return (

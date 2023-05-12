@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
 import './questions.css';
 
+// add fetchImproved as util.js class 
+
 const Enroll = ({setAuth}) => {
 
   const navigate = useNavigate();
@@ -13,73 +15,61 @@ const Enroll = ({setAuth}) => {
   const practice = location.state.practice;
   const [sessionId, setSessionId] = useState(0);
   const [sessionName, setSessionName] = useState('');
-  const [difficulty, setDifficulty] = useState('Medium');
-  const [culture, setCulture] = useState('Default Culture');
+  const [difficultyOptions, setDifficultyOptions] = useState([]);
+  const [cultureOptions, setCultureOptions] = useState([]);
+  const [selectedDifficulty, setSelectedDifficulty] = useState('Medium');
+  const [selectedCulture, setSelectedCulture] = useState('Default Culture');
   const [additionalCultures, setAdditionalCultures] = useState([]);
 
-  async function getInfo() {
-    try {
-      setLoaded(true);
-      const res = await fetch(`/api/enrollments/${id}/sessions/new${practice ? '?practice=true' : ''}`, {
-        method: 'GET',
-        headers: { token: localStorage.token }
-      });
-        
-      const parseData = await res.json();
-
-      console.log(parseData);
-      setSessionId(parseData.sessionId);
-      setSessionName(parseData.sessionName);
-      
-      var select = document.getElementById("difficulties"); 
-      for(var i = 0; i < parseData.difficulties.length; i++) {
-        var element = document.createElement("option");
-        element.text = parseData.difficulties[i];
-        element.value = parseData.difficulties[i];
-        select.add(element);
-      }
-      
-      select = document.getElementById("cultures"); 
-      for(i = 0; i < parseData.cultures.length; i++) {
-        element = document.createElement("option");
-        element.text = parseData.cultures[i].name;
-        element.value = parseData.cultures[i].name;
-        select.add(element);
-      }
-
-      select = document.getElementById("additionalCultures"); 
-      for(i = 0; i < parseData.cultures.length; i++) {
-        element = document.createElement("option");
-        element.text = parseData.cultures[i].name;
-        element.value = parseData.cultures[i].name;
-        select.add(element);
-      }
-    } catch (err) {
-        console.log(err.message);
-    }
-  }
-
   useEffect(() => {
-    console.log("hi");
-    if (loaded === false) {
-      getInfo()
-    }
-  })
+    async function fetchSessionData() {
 
-  const changeCulture = e => {
-    setCulture(e.target.value);
+      // make an id check
+      if (!id) { 
+        console.error("id")
+      }
+
+      try {
+        const res = await fetch(`api/enrollments/${id}/sessions/new${practice ? '?practice=true' : ''}`, {
+          method: 'GET',
+          headers: {token: localStorage.token}
+        });
+
+        console.log(res)
+        const parseData = await res.json();
+        console.log(parseData);
+        console.log(parseData.cultures);
+        
+        setLoaded(true);
+        setSessionId(parseData.sessionId);
+        setSessionName(parseData.sessionName);
+        setDifficultyOptions(parseData.difficulties);
+        setCultureOptions(parseData.cultures);
+
+        console.log(parseData.cultures);
+        console.log(parseData);
+      } catch (err) {
+        console.error(err.message)
+      }
+    } 
+    
+    fetchSessionData();
+  }, [id, practice]);
+
+  const handleDifficultyChange = (event) => {
+    setSelectedDifficulty(event.target.value);
   };
 
-  const changeDifficulty = e => {
-    setDifficulty(e.target.value);
+  const handleCultureChange = (event) => {
+    setSelectedCulture(event.target.value);
   };
 
-  const changeAdditionalCultures = e => {
+  const handleAdditionalCultures = (event) => {
     var temp = [];
-    for(var i=0; i < e.target.options.length; i++) {
-      console.log(e.target.options[i]);
-      if(e.target.options[i].selected === true) {
-        temp.push(e.target.options[i].text);
+    for(var i=0; i < event.target.options.length; i++) {
+      console.log(event.target.options[i]);
+      if(event.target.options[i].selected === true) {
+        temp.push(event.target.options[i].text);
       }
     }
     setAdditionalCultures(temp);
@@ -87,51 +77,129 @@ const Enroll = ({setAuth}) => {
     
   const cancel = () => {
     navigate("/course-enrollments");
+  };
+
+  const ok = async event => {
+    console.log(selectedDifficulty);
+    console.log(selectedCulture);
+    console.log(additionalCultures);
+    navigate("/confirmation", {state: {id: id, sessionId: sessionId, selectedDifficulty: selectedDifficulty, selectedCulture: selectedCulture, additionalCultures: additionalCultures, name: name}});
+  };
+  
+
+  // temporary will remove  
+  const cardCSS = {
+    label: {
+      margin: "28px 0px 16px"
+    }
   }
 
-  const ok = async e => {
-    console.log(difficulty);
-    console.log(culture);
-    console.log(additionalCultures);
-    navigate("/confirmation", {state: {id: id, sessionId: sessionId, difficulty: difficulty, culture: culture, additionalCultures: additionalCultures, name: name}});
+  const questionSetSection = () => {
+    return (
+      <>
+        <div className='item'>
+          <label for="question-set-selection" style={cardCSS.label}>Question Set:</label>
+            <div className='dropdown'>
+                <select name='name' id='name'>
+                  <option value={name}>{name}</option>
+                </select>
+                {/* <input readOnly='readonly' name='name' id='name' value={name}/> */}
+            </div>
+        </div>
+      </>
+    )
+  }
+
+  const cultureSection = () => {
+    return (
+      <>
+      {/* error when navigation from continue-create.js page to enroll.js page
+        when its creating a new account, it seems like the cultures array is empty
+        the error it's throwing is a undefined property when reading 'map' */}
+      <div className='item'>
+        <label for="culture-selection" style={cardCSS.label}>Culture:</label>
+          <div className='dropdown'>
+            <select value={selectedCulture} onChange={handleCultureChange}>
+              {cultureOptions.map((option, index) => (
+                <option key={index} value={option.name}>
+                  {option.name}
+                </option>
+              ))}
+            </select>
+        </div>
+      </div>
+      </>
+    )
+  }
+
+  const difficultySection = () => {
+    return (
+      <>
+      <div className='item'>
+        <label style={cardCSS.label}>Difficulty:</label>
+        <div className='dropdown'>
+          <select value={selectedDifficulty} onChange={handleDifficultyChange}>
+            {difficultyOptions.map((option, index) => (
+              <option key={index} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+      </>
+    )
+  }
+
+  const additionalCultureSection = () => {
+    return (
+      <>
+        <div className='item'>
+          <label style={cardCSS.label}>Additional Cultures:</label>
+            <div className='dropdown'>
+              <select multiple={true} value={additionalCultures} onChange={(event) => handleAdditionalCultures(event.target.value)}>                
+                {cultureOptions.filter((option) => option.name !== selectedCulture).map((option, index) => (
+                  <option key={index} value={option.name}>
+                    {option.name}
+                  </option>
+                ))}
+              </select>
+          </div>
+        </div>
+      </>
+    )
+  }
+
+
+  const buttonSection = () => {
+    return (
+      <>
+        <button id="login" onClick={cancel} >Cancel</button>
+        <button id="createAccount" onClick={ok} >Ok</button>
+      </>
+    )
   }
 
   return (
-    <div className="Center">
-      <h1>{sessionName}</h1>
-      <div className="item">
-        <p>Question Set:</p>
-        <div className="dropdown">
-          <select name="name" id="name">
-            <option value={name}>{name}</option>
-          </select>
+    <>      
+      {!loaded ? (
+        <p>Loading...</p>
+        ) : (
+        <div className='Center'>
+          <form onSubmit={ok}>
+            <h1>{sessionName}</h1>
+            {questionSetSection()}
+            {cultureSection()}
+            {difficultySection()}
+            {additionalCultureSection()}
+            {buttonSection()}
+          </form>
         </div>
-      </div>
-      <div className="item">
-        <p>Preferred Culture:</p>
-        <div className="dropdown">
-          <select name="cultures" id="cultures" value={culture} onChange={e => changeCulture(e)}>
-          </select>
-        </div>
-      </div>
-      <div className="item">
-        <p>Difficulty:</p>
-        <div className="dropdown">
-          <select name="difficulties" id="difficulties" value={difficulty} onChange={e => changeDifficulty(e)}>
-          </select>
-        </div>
-      </div>
-      <div className="item">
-        <p>Additional Cultures:</p>
-        <div className="dropdown">
-          <select name="additionalCultures" id="additionalCultures" value={additionalCultures} onChange={(e) => changeAdditionalCultures(e)} multiple={true}>
-          </select>
-        </div>
-      </div>
-      <button id="login" onClick={cancel} >Cancel</button>
-      <button id="createAccount" onClick={ok} >Ok</button>
-    </div>
+      )}
+    </>
   );
-}
+};
 
 export default Enroll;
+
+

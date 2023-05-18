@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
 import './questions.css';
-import Metric from './metric.js';
 
 const Metrics = ({setAuth}) => {
 
@@ -14,6 +13,32 @@ const Metrics = ({setAuth}) => {
   const [username, setUsername] = React.useState("");
   const [nickname, setNickname] = React.useState("");
   const [sessions, setSessions] = React.useState([]);
+
+
+  const metricSection = ({name, date, cultures, correct, totalQuestions}) => {
+      return (
+          <tbody>
+              <tr>
+              <td>{name}</td>
+              {cultures ? (
+                  <td>{date.split("T")[0]}</td>
+              ) : (
+                  <td>Expected: {date.split("T")[0]}</td>
+              )}
+              {cultures ? (
+                  <td>{cultures}</td>
+              ) : (
+                  <td>N/A</td>
+              )}
+              {cultures ? (
+                  <td>{correct}/{totalQuestions}</td>
+              ) : (
+                  <td>N/A</td>
+              )}
+              </tr>
+          </tbody>
+      )
+  }     
 
   async function getMetrics() {
     try {
@@ -34,16 +59,30 @@ const Metrics = ({setAuth}) => {
     }
   }
 
+  const headerSection = () => {
+    return (
+        <thead>
+            <tr>
+                <th>Session</th>
+                <th>Date</th>
+                <th>Cultures</th>
+                <th>Score</th>
+            </tr>
+        </thead>
+    )
+}
+
   useEffect(() => {
     getMetrics();
   })
+
 
   const goBack = () => {
     navigate("/course-enrollments");
   }
 
   return (
-    <div className="Center">
+    <div className="tables_center">
       <div id="welcome">
         <h1>Enrollment Metrics</h1>
       </div>
@@ -53,23 +92,26 @@ const Metrics = ({setAuth}) => {
         <p>Enrollment Name: {name}</p>
       </div>
       <div>
+        <table className="table">
+        {headerSection()}
         {sessions?.map(
             (session, idx) => {
             if (sessions != null) {
-                return (<Metric
-                key={idx}
-                id={session.id}
-                name={session.name}
-                date={session.date}
-                cultures={session.cultures}
-                correct={session.correct}
-                totalQuestions={session.totalQuestions}
-                isOfficialSession={session.isOfficialSession} />);
+                return metricSection({
+                key: idx,
+                id: session.id,
+                name: session.name,
+                date: session.date,
+                cultures: session.cultures,
+                correct: session.correct,
+                totalQuestions: session.totalQuestions,
+                isOfficialSession: session.isOfficialSession });
             } else {
                 return (<div />);
             }
             }
         )}
+        </table>
       </div>
       <button onClick={goBack}>Back to Courses</button>
     </div>

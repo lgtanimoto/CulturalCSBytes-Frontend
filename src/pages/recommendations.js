@@ -50,8 +50,8 @@ const Recommendations = ({setAuth}) => {
 
   // dont know what this is right now??? --------------------
   useEffect(() => {
-    getRecommendations();
-  })
+    getRecommendations()
+  }, []);
 
   
  //  welcome section o ----------------------
@@ -124,7 +124,7 @@ const Recommendations = ({setAuth}) => {
     <div className="Center">
       {welcome()}
       {recommendations()}
-      {backButton}
+      {backButton()}
     </div>
   );
 }

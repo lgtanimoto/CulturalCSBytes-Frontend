@@ -42,8 +42,8 @@ function Home() {
 
   return (
     <div className="Center">
-      {welcomeGreetings}
-      {homeButtons}
+      {welcomeGreetings()}
+      {homeButtons()}
     </div>
   );
 }

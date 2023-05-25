@@ -105,7 +105,16 @@ const Recommendations = ({setAuth}) => {
     )
   } // end of recommendations
 
-  // the go back button ---------------------------------------------
+  // back button section ------------------------------------
+  const backButton = () => {
+    return (
+      <>
+        <button onClick={goBack}>Back to Courses</button>
+      </>
+    )
+  }
+
+  // the go back function ---------------------------------------------
   const goBack = () => {
     navigate("/course-enrollments");
   } // end go back button
@@ -115,8 +124,7 @@ const Recommendations = ({setAuth}) => {
     <div className="Center">
       {welcome()}
       {recommendations()}
-      
-      <button onClick={goBack}>Back to Courses</button>
+      {backButton}
     </div>
   );
 }

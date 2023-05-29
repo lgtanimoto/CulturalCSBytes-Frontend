@@ -85,7 +85,7 @@ const CreateAccount = ({setAuth}) => {
     const buttonSection = () => {
       return (
         <>
-          <div className='item'>
+          <div className="item">
             <button onClick={goHome}>Cancel</button>
             <button onClick={continueClick}>Continue</button>
           </div>
@@ -95,7 +95,7 @@ const CreateAccount = ({setAuth}) => {
 
   return(
     <form onSubmit={continueClick}>
-      <div className='Center'>
+      <div className="Center">
         <h1>Create Account</h1>
         <div className="username">
           {usernameSection()}

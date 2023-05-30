@@ -1,15 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import './questions.css';
-import Course from './course.js';
+
 
 const CourseEnrollments = ({setAuth}) => {
   const navigate = useNavigate();
 
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
-  const [courseData, setCourseData] = useState([]);
-  
+  const [courseData, setCourseData] = React.useState([]);
+
+  const courseSection = ({statsClick, continueClick, id, name, completed, high, status}) =>{
+    return (
+        // <div className="course">
+          <tbody>
+            <tr>
+                <td>{name}</td>
+                <td>{completed}</td>
+                <td>{high}%</td>
+                <td>{status}</td>
+                <td className="stats_cont"><button type="button" onClick={() => statsClick(id, name)}>
+            Stats
+            </button>
+            <button  type="button" onClick={() => continueClick(id, name)}>
+            Continue
+            </button></td>
+            </tr>
+          </tbody>
+        // </div>
+    )
+}
+
+  // async function grabbing the name from an api fetch call 
+  // and using get request to store data into respond variable
   async function getName() {
 
     try {
@@ -48,7 +71,25 @@ const CourseEnrollments = ({setAuth}) => {
       console.error(err.message)
     }
   }
-  
+
+  const courseHeaderSection = () => {
+    return (
+        <thead>
+            <tr>
+                <th>Course</th>
+                <th>Completed</th>
+                <th>High Score</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+    )
+}
+
+  useEffect(() => {
+    getName()
+  }, []);
+
+  // fetch's need to be inside of a useEffect(..., ....)
   async function continueClick(id, name) {
     try {
       const res = await fetch(`/api/enrollments/${id}/sessions/continue`, {
@@ -77,31 +118,36 @@ const CourseEnrollments = ({setAuth}) => {
     navigate("/metrics", {state: {id: id, name: name}});
   }
 
-  useEffect(() => {
-    getName();
-  }, []);
-
-  return (
-    <div className='Center'>
+  //TO DO: get nickname from backend on login
+  return(
+    <div className='tables_center'>
       <h1>Course Enrollments</h1>
       <div className='item'>
         <p>Username: {username}</p>
         <p>Nickname: {name}</p>
       </div>
-      <div id='options'>
-        {courseData.map((course, idx) => (
-          <Course
-            key={idx}
-            id={course.id}
-            name={course.name}
-            completed={course.completed}
-            high={course.high}
-            status={course.status}
-            statsClick={statsClick}
-            continueClick={continueClick}
-          />
-        ))}
-      </div>
+      {/* <div id="options"> */}
+      <table>
+        {courseHeaderSection()}
+            {courseData.map(
+             (course, idx) => {
+               if (courseData != null) {
+                 return courseSection({
+                 key: idx,
+                 id: course.id,
+                 name: course.name,
+                 completed: course.completed,
+                 high: course.high,
+                 status: course.status,
+                 statsClick: statsClick,
+                 continueClick: continueClick });
+               } else {
+                 return (<div />);
+               }
+             }
+           )}
+           </table>
+      {/* </div> */}
       <button onClick={() => setAuth(false)}>Logout</button>
     </div>
   )

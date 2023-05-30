@@ -6,64 +6,98 @@ const Login = ({setAuth}) => {
 
   const navigate = useNavigate();
 
+  const [username, setUsename] = useState("");
+  const [password, setPassword] = useState("");
+  const [feedback, setFeedback] = useState("");
+
+  const handleUsernameChange = (event) => {
+    setUsename(event.target.value);
+  }
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+  }
+
   const goHome = () => {
     navigate("/home")
   }
 
-  const [inputs, setInputs] = useState({
-    username: "",
-    password: ""
-  });
-
-  const { username, password } = inputs;
-
-  const onChange = e => {
-    setInputs({ ...inputs, [e.target.name]: e.target.value });
-  };
-
   //makes backend call to login, navigates to enrollments if successful, displays message if not
-  const continueClick = async e => {
-    e.preventDefault();
+  const continueClick = async (event) => {
+    event.preventDefault();
     try {
       const body = { username, password };
-      const response = await fetch("/api/authentication/login", {
+      const res = await fetch("/api/authentication/login", {
         method: "POST",
         headers: {"Content-type": "application/json"},
         body: JSON.stringify(body)
       });
 
-      const parseRes = await response.json();
+      const parseRes = await res.json();
 
       if (parseRes.token) {
         localStorage.setItem("token", parseRes.token);
         setAuth(true);
+      } else if(username === "") {
+        setFeedback("Username is required"); 
+      } else if(password === "") {
+          setFeedback("Password is required"); 
       } else {
         setAuth(false);
-        document.getElementById("feedback").innerText = "Username or password is incorrect";
+        setFeedback("Username or password is incorrect");
       }
     } catch (err) {
       console.error(err.message);
     }
   }
 
+  const cardCSS = {
+    label: {
+      margin: "28px 0px 16px"
+    }
+  }
+
+  const usernameSection = () => {
+    return (
+      <>
+        <div className="item">
+          <label for="username" style={cardCSS.label}>Username:</label>
+          <input id="username" type="text" name="username" value={username} onChange={handleUsernameChange}></input>
+        </div>
+      </>
+    )
+  }
+
+  const passwordSection = () => {
+    return (
+      <>
+        <div className="item">
+          <label for="password" style={cardCSS.label}>Password:</label>
+          <input id="password" type="password" name="password" value={password} onChange={handlePasswordChange}></input>
+        </div>
+      </>
+    )
+  }
+
+  const buttonSection = () => {
+    return (
+      <>
+        <div className='item'>
+          <button onClick={goHome}>Cancel</button>
+          <button onClick={continueClick}>Continue</button>
+        </div>
+      </>
+    )
+  }
+
   return(
     <div className='Center'>
       <h1>Login</h1>
       <div className="username">
-        <div className="item">
-          <p>Username:</p>
-          <input id="username" type="text" name="username" value={username} onChange={e => onChange(e)}></input>
-        </div>
-        <div className="item">
-          <p>Password:</p>
-          <input id="password" type="password" name="password" value={password} onChange={e => onChange(e)}></input>
-        </div>
+          {usernameSection()}
+          {passwordSection()}
       </div>
-      <div className='item'>
-        <button onClick={goHome}>Cancel</button>
-        <button onClick={continueClick}>Continue</button>
-      </div>
-      <p id="feedback"></p>
+      {buttonSection()}
+      <p id="feedback">{feedback}</p>
     </div>
   );
 }

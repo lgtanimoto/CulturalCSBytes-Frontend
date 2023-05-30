@@ -15,17 +15,21 @@ const ContinueCreateAccount = ({setAuth}) => {
   const [email, setEmail] = useState("");
   const [age, setAge] = useState(14);
   const [zipcode, setZipcode] = useState("");
+  const [feedback, setFeedback] = useState("");
   
   // updating user's username, password, nickname, email, ... after user inputs data
   const handleUsernameChange = (event) => {
     setUsename(event.target.value);
   }
+  
+  // eslint-disable-next-line 
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
   }
   const handleNicknameChange = (event) => {
     setNickname(event.target.value);
   }
+
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
   }
@@ -44,28 +48,41 @@ const ContinueCreateAccount = ({setAuth}) => {
   const continueClick = async (event) => {
     event.preventDefault();
 
-    try {
-      const body = {
-        username, 
-        password, 
-        nickname, 
-        email, 
-        age, 
-        zipcode, 
-        name: location.state.name, 
-        pw: location.state.pw
-      };
+    const updatedNickname = nickname === "" ? username : nickname;
 
-      const res = await fetch("/api/authentication/register", {
-        method: "POST",
-        headers: {"Content-type": "application/json"},
-        body: JSON.stringify(body)
-      });
+    if(email === "") {
+      setFeedback("Email is required"); 
+    } else if(zipcode === "") {
+      setFeedback("Zipcode is required"); 
+    } else {
+        try {
+          const body = {
+            username, 
+            password, 
+            nickname: updatedNickname, 
+            email, 
+            age, 
+            zipcode, 
+            name: location.state.name, 
+            pw: location.state.pw
+          };
+    
+          const res = await fetch("/api/authentication/register", {
+            method: "POST",
+            headers: {"Content-type": "application/json"},
+            body: JSON.stringify(body)
+          });
+    
+          const parseRes = await res.json()
+    
+          localStorage.setItem("token", parseRes.token);
+          setAuth(true);
+          console.log(parseRes)
 
-      const parseRes = await res.json()
-      localStorage.setItem("token", parseRes.token);
-      setAuth(true);
-      console.log(parseRes)
+        } catch (err) {
+          console.log(err.message);
+        }
+    }
 
       // need to get the id and initialize it 
 
@@ -78,11 +95,8 @@ const ContinueCreateAccount = ({setAuth}) => {
       //   },
       // });
 
-    } catch (err) {
-      console.log(err.message);
-    }
+  
   };
-
 
   // temporary will remove  
   const cardCSS = {
@@ -201,7 +215,7 @@ const ContinueCreateAccount = ({setAuth}) => {
           {questionSetSection()}
         </div>
           {buttonSection()}
-        <p id="feedback"></p>
+        <p id="feedback">{feedback}</p>
       </div>
     </form>
   ); 

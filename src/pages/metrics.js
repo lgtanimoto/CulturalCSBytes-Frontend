@@ -36,7 +36,7 @@ const Metrics = ({setAuth}) => {
 
   useEffect(() => {
     getMetrics();
-  })
+  }, [])
 
   const goBack = () => {
     navigate("/course-enrollments");

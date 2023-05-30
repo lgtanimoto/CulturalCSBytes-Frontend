@@ -4,10 +4,8 @@ import './questions.css';
 
 
 const CourseEnrollments = ({setAuth}) => {
-
   const navigate = useNavigate();
 
-  // setting the stage to grab the name, userName, and courseData
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [courseData, setCourseData] = React.useState([]);
@@ -36,41 +34,41 @@ const CourseEnrollments = ({setAuth}) => {
   // async function grabbing the name from an api fetch call 
   // and using get request to store data into respond variable
   async function getName() {
+
     try {
       const res = await fetch('/api/enrollments', {
         method: 'GET',
-        headers: { token: localStorage.token }
+        headers: { token: localStorage.token },
       });
-      
-      // respond data is now a json object stored into parseData
+
       const parseData = await res.json();
       console.log(parseData)
 
       setName(parseData.nickname);
       setUsername(parseData.username);
 
-      var temp = [];
-      for(var i=0; i<parseData.enrollments.length; i++){
-        var statusText;
-        if(parseData.enrollments[i].status.started === false) {
-          statusText = "Not started";
-        } else if(parseData.enrollments[i].status.completed === false) {
-          statusText = "In progress";
+      const temp = parseData.enrollments.map((enrollment) => {
+        let statusText;
+        if (enrollment.status.started === false) {
+          statusText = 'Not started';
+        } else if (enrollment.status.completed === false) {
+          statusText = 'In progress';
         } else {
-          statusText = "Finished";
+          statusText = 'Finished';
         }
-        temp.push({
-          id: parseData.enrollments[i].id,
-          name: parseData.enrollments[i].name,
-          completed: parseData.enrollments[i].completedSessions,
-          high: parseData.enrollments[i].highScore,
-          status: statusText,
-        })
-      };
-      setCourseData(temp);
 
+        return {
+          id: enrollment.id,
+          name: enrollment.name,
+          completed: enrollment.completedSessions,
+          high: enrollment.highScore,
+          status: statusText,
+        };
+      });
+      
+      setCourseData(temp);
     } catch (err) {
-      console.error(err.message);
+      console.error(err.message)
     }
   }
 
@@ -104,7 +102,6 @@ const CourseEnrollments = ({setAuth}) => {
       
       const parseData = await res.json();
 
-      // this format for checking user's info should also be in continue-create.js before navigating to enroll.js
       if(parseData.route === "new") {
         navigate("/enroll", {state: {id: id, name: name, practice: parseData.params ? true : false}});
       } else {
@@ -125,9 +122,9 @@ const CourseEnrollments = ({setAuth}) => {
   return(
     <div className='tables_center'>
       <h1>Course Enrollments</h1>
-      <div className="item">
-        {<p>Username: {username}</p>
-        }<p>Nickname: {name}</p>
+      <div className='item'>
+        <p>Username: {username}</p>
+        <p>Nickname: {name}</p>
       </div>
       {/* <div id="options"> */}
       <table>
@@ -153,7 +150,8 @@ const CourseEnrollments = ({setAuth}) => {
       {/* </div> */}
       <button onClick={() => setAuth(false)}>Logout</button>
     </div>
-  );
+  )
 }
 
 export default CourseEnrollments;
+

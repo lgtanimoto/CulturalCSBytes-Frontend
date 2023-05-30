@@ -74,7 +74,7 @@ const Metrics = ({setAuth}) => {
 
   useEffect(() => {
     getMetrics();
-  })
+  }, [])
 
 
   const goBack = () => {

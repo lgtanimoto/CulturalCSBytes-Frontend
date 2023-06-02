@@ -75,13 +75,19 @@ const ContinueCreateAccount = ({setAuth}) => {
     
           const parseRes = await res.json()
     
-          localStorage.setItem("token", parseRes.token);
-          setAuth(true);
-          console.log(parseRes)
-
+          if (res.ok) {
+            localStorage.setItem("token", parseRes.token);
+            setAuth(true);
+            console.log(parseRes);
+          } else {
+            if (parseRes.error === "User already exists.") {
+              setFeedback("Username already exists.");
+            } 
+          }
         } catch (err) {
           console.log(err.message);
         }
+        
     }
 
       // need to get the id and initialize it 

@@ -17,7 +17,7 @@ const CourseEnrollments = ({setAuth}) => {
             <tr>
                 <td>{name}</td>
                 <td>{completed}</td>
-                <td>{high}%</td>
+                <td>{high}&#37;</td>
                 <td>{status}</td>
                 <td className="stats_cont"><button type="button" onClick={() => statsClick(id, name)}>
             Stats

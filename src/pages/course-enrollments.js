@@ -9,6 +9,7 @@ const CourseEnrollments = ({setAuth}) => {
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [courseData, setCourseData] = React.useState([]);
+  const [error, setError] = useState(null);
 
   const courseSection = ({statsClick, continueClick, id, name, completed, high, status}) =>{
     return (
@@ -41,6 +42,16 @@ const CourseEnrollments = ({setAuth}) => {
         headers: { token: localStorage.token },
       });
 
+      if (!res.ok) {
+        const error = new Error('Failed to fetch data');
+        error.info = await res.json()
+        error.status = res.status
+        console.log("Error status: " + error.status)
+        console.log("Error: " + error.info)
+        throw error
+      }
+      setError(null);
+
       const parseData = await res.json();
       console.log(parseData)
 
@@ -69,6 +80,7 @@ const CourseEnrollments = ({setAuth}) => {
       setCourseData(temp);
     } catch (err) {
       console.error(err.message)
+      setError('Failed to fetch data');
     }
   }
 
@@ -99,6 +111,16 @@ const CourseEnrollments = ({setAuth}) => {
           token: localStorage.token
         },
       });
+
+      if (!res.ok) {
+        const error = new Error('Failed to fetch data');
+        error.info = await res.json()
+        error.status = res.status
+        console.log("Error status: " + error.status)
+        console.log("Error: " + error.info)
+        throw error
+      }
+      setError(null);
       
       const parseData = await res.json();
 
@@ -110,7 +132,8 @@ const CourseEnrollments = ({setAuth}) => {
       }
 
     } catch (err) {
-      console.log(err.message);
+      console.error(err.message);
+      setError('Failed to fetch data');
     }
   }
 

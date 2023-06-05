@@ -9,7 +9,6 @@ const CourseEnrollments = ({setAuth}) => {
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [courseData, setCourseData] = React.useState([]);
-  const [error, setError] = useState(null);
   const [post, setPost] = useState([])
   const [errorMsg, setErrorMsg] = useState('')
 
@@ -51,15 +50,13 @@ const CourseEnrollments = ({setAuth}) => {
         // if > 300, throw new error specifying url and error code
       if (res.ok && res.status < 300) {
         const result = await res.json();
-        error.status = res.status
         setPost(result);
       } else {
         throw new Error (`Fetch to ${apiUrl} failed with status ${res.status}`);
       }
 
       const parseData = await res.json();
-      console.log(parseData)
-
+      
       setName(parseData.nickname);
       setUsername(parseData.username);
 
@@ -119,7 +116,6 @@ const CourseEnrollments = ({setAuth}) => {
 
       if (res.ok && res.status < 300) {
         const result = await res.json();
-        error.status = res.status
         setPost(result);
       } else {
         throw new Error (`Fetch to ${apiUrl} failed with status ${res.status}`);

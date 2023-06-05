@@ -10,6 +10,9 @@ const CourseEnrollments = ({setAuth}) => {
   const [username, setUsername] = useState("");
   const [courseData, setCourseData] = React.useState([]);
   const [error, setError] = useState(null);
+  const [post, setPost] = useState([])
+  const [errorMsg, setErrorMsg] = useState('')
+
 
   const courseSection = ({statsClick, continueClick, id, name, completed, high, status}) =>{
     return (
@@ -37,20 +40,22 @@ const CourseEnrollments = ({setAuth}) => {
   async function getName() {
 
     try {
-      const res = await fetch('/api/enrollments', {
+      const apiUrl = '/api/enrollments';
+      const res = await fetch(apiUrl, {
         method: 'GET',
         headers: { token: localStorage.token },
       });
 
-      if (!res.ok) {
-        const error = new Error('Failed to fetch data');
-        error.info = await res.json()
+      // handling status code/errors for fetch call 
+        // if < 300, a useState(setPost) will display result 
+        // if > 300, throw new error specifying url and error code
+      if (res.ok && res.status < 300) {
+        const result = await res.json();
         error.status = res.status
-        console.log("Error status: " + error.status)
-        console.log("Error: " + error.info)
-        throw error
+        setPost(result);
+      } else {
+        throw new Error (`Fetch to ${apiUrl} failed with status ${res.status}`);
       }
-      setError(null);
 
       const parseData = await res.json();
       console.log(parseData)
@@ -79,8 +84,7 @@ const CourseEnrollments = ({setAuth}) => {
       
       setCourseData(temp);
     } catch (err) {
-      console.error(err.message)
-      setError('Failed to fetch data');
+      setErrorMsg(err.message);
     }
   }
 
@@ -104,7 +108,8 @@ const CourseEnrollments = ({setAuth}) => {
   // fetch's need to be inside of a useEffect(..., ....)
   async function continueClick(id, name) {
     try {
-      const res = await fetch(`/api/enrollments/${id}/sessions/continue`, {
+      const apiUrl = `/api/enrollments/${id}/sessions/continue`
+      const res = await fetch(apiUrl, {
         method: 'GET',
         headers: {
           "Content-type": "application/json",
@@ -112,15 +117,13 @@ const CourseEnrollments = ({setAuth}) => {
         },
       });
 
-      if (!res.ok) {
-        const error = new Error('Failed to fetch data');
-        error.info = await res.json()
+      if (res.ok && res.status < 300) {
+        const result = await res.json();
         error.status = res.status
-        console.log("Error status: " + error.status)
-        console.log("Error: " + error.info)
-        throw error
+        setPost(result);
+      } else {
+        throw new Error (`Fetch to ${apiUrl} failed with status ${res.status}`);
       }
-      setError(null);
       
       const parseData = await res.json();
 
@@ -132,8 +135,7 @@ const CourseEnrollments = ({setAuth}) => {
       }
 
     } catch (err) {
-      console.error(err.message);
-      setError('Failed to fetch data');
+      setErrorMsg(err.message);
     }
   }
 

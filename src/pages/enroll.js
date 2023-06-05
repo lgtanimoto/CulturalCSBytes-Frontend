@@ -24,21 +24,13 @@ const Enroll = ({setAuth}) => {
   useEffect(() => {
     async function fetchSessionData() {
 
-      // make an id check
-      if (!id) { 
-        console.error("id")
-      }
-
       try {
         const res = await fetch(`api/enrollments/${id}/sessions/new${practice ? '?practice=true' : ''}`, {
           method: 'GET',
           headers: {token: localStorage.token}
         });
 
-        console.log(res)
         const parseData = await res.json();
-        console.log(parseData);
-        console.log(parseData.cultures);
         
         setLoaded(true);
         setSessionId(parseData.sessionId);
@@ -46,8 +38,6 @@ const Enroll = ({setAuth}) => {
         setDifficultyOptions(parseData.difficulties);
         setCultureOptions(parseData.cultures);
 
-        console.log(parseData.cultures);
-        console.log(parseData);
       } catch (err) {
         console.error(err.message)
       }
@@ -80,9 +70,6 @@ const Enroll = ({setAuth}) => {
   };
 
   const ok = async event => {
-    console.log(selectedDifficulty);
-    console.log(selectedCulture);
-    console.log(additionalCultures);
     navigate("/confirmation", {state: {id: id, sessionId: sessionId, selectedDifficulty: selectedDifficulty, selectedCulture: selectedCulture, additionalCultures: additionalCultures, name: name}});
   };
   

@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import './questions.css';
+// when importing this, must use this style {export const} 
+  // using {} since we exported const as a function
+  // when exporting a react functional component, we export defualt
+import {fetchData} from "./fetchData.js";
 
 
 const CourseEnrollments = ({setAuth}) => {
@@ -9,7 +13,6 @@ const CourseEnrollments = ({setAuth}) => {
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [courseData, setCourseData] = React.useState([]);
-  const [post, setPost] = useState([])
   const [errorMsg, setErrorMsg] = useState('')
 
 
@@ -38,52 +41,48 @@ const CourseEnrollments = ({setAuth}) => {
   // and using get request to store data into respond variable
   async function getName() {
 
-    try {
-      const apiUrl = '/api/enrollments';
-      const res = await fetch(apiUrl, {
-        method: 'GET',
-        headers: { token: localStorage.token },
-      });
+    const apiUrl = '/api/enrollments';
 
-      // handling status code/errors for fetch call 
-        // if < 300, a useState(setPost) will display result 
-        // if > 300, throw new error specifying url and error code
-      if (res.ok && res.status < 300) {
-        const result = await res.json();
-        setPost(result);
+    const res = await fetchData(apiUrl, {
+      method: 'GET',
+      headers: { token: localStorage.token },
+    });
+    
+    if (!res.isOk) {
+      setErrorMsg('network error');
+      return;
+    }
+
+    const parseData = res.data
+    setName(parseData.nickname);
+    setUsername(parseData.username);  
+
+    const temp = parseData.enrollments.map((enrollment) => {
+      let statusText;
+      if (enrollment.status.started === false) {
+        statusText = 'Not started';
+      } else if (enrollment.status.completed === false) {
+        statusText = 'In progress';
       } else {
-        throw new Error (`Fetch to ${apiUrl} failed with status ${res.status}`);
+        statusText = 'Finished';
       }
 
-      const parseData = await res.json();
+      return {
+        id: enrollment.id,
+        name: enrollment.name,
+        completed: enrollment.completedSessions,
+        high: enrollment.highScore,
+        status: statusText,
+      };
       
-      setName(parseData.nickname);
-      setUsername(parseData.username);
+    })
 
-      const temp = parseData.enrollments.map((enrollment) => {
-        let statusText;
-        if (enrollment.status.started === false) {
-          statusText = 'Not started';
-        } else if (enrollment.status.completed === false) {
-          statusText = 'In progress';
-        } else {
-          statusText = 'Finished';
-        }
-
-        return {
-          id: enrollment.id,
-          name: enrollment.name,
-          completed: enrollment.completedSessions,
-          high: enrollment.highScore,
-          status: statusText,
-        };
-      });
-      
-      setCourseData(temp);
-    } catch (err) {
-      setErrorMsg(err.message);
-    }
-  }
+    setCourseData(temp);
+  };
+    
+  
+  
+  
 
   const courseHeaderSection = () => {
     return (

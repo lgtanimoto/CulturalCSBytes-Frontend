@@ -79,9 +79,6 @@ const CourseEnrollments = ({setAuth}) => {
 
     setCourseData(temp);
   };
-    
-  
-  
   
 
   const courseHeaderSection = () => {
@@ -103,34 +100,28 @@ const CourseEnrollments = ({setAuth}) => {
 
   // fetch's need to be inside of a useEffect(..., ....)
   async function continueClick(id, name) {
-    try {
-      const apiUrl = `/api/enrollments/${id}/sessions/continue`
-      const res = await fetch(apiUrl, {
-        method: 'GET',
-        headers: {
-          "Content-type": "application/json",
-          token: localStorage.token
-        },
-      });
 
-      if (res.ok && res.status < 300) {
-        const result = await res.json();
-        setPost(result);
-      } else {
-        throw new Error (`Fetch to ${apiUrl} failed with status ${res.status}`);
-      }
-      
-      const parseData = await res.json();
+    const apiUrl = `/api/enrollments/${id}/sessions/continue`
+    const res = await fetchData(apiUrl, {
+      method: 'GET',
+      headers: {
+        "Content-type": "application/json",
+        token: localStorage.token
+      },
+    });
 
-      if(parseData.route === "new") {
-        navigate("/enroll", {state: {id: id, name: name, practice: parseData.params ? true : false}});
-      } else {
-        console.log(parseData);
-        navigate("/questions", {state: {id: id, sessionId: parseData.route.sessionId, order: parseData.route.questionOrder, name: name}});
-      }
+    if (!res.isOk) {
+      setErrorMsg('network error');
+      return;
+    }
+    
+    const parseData = res.data
 
-    } catch (err) {
-      setErrorMsg(err.message);
+    if(parseData.route === "new") {
+      navigate("/enroll", {state: {id: id, name: name, practice: parseData.params ? true : false}});
+    } else {
+      console.log(parseData);
+      navigate("/questions", {state: {id: id, sessionId: parseData.route.sessionId, order: parseData.route.questionOrder, name: name}});
     }
   }
 

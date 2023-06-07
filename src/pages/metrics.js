@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
+import { fetchData } from './fetchData';
 import './questions.css';
 
 const Metrics = ({setAuth}) => {
@@ -44,7 +45,7 @@ const Metrics = ({setAuth}) => {
   async function getMetrics() {
 
     const apiUrl = `/api/enrollments/${id}`;
-    const res = await fetch(apiUrl, {
+    const res = await fetchData(apiUrl, {
       method: 'GET',
       headers: { token: localStorage.token }
     });

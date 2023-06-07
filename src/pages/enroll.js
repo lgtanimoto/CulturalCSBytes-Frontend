@@ -1,5 +1,7 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
+import { fetchData } from './fetchData';
 import './questions.css';
 
 // add fetchImproved as util.js class 
@@ -20,27 +22,30 @@ const Enroll = ({setAuth}) => {
   const [selectedDifficulty, setSelectedDifficulty] = useState('Medium');
   const [selectedCulture, setSelectedCulture] = useState('Default Culture');
   const [additionalCultures, setAdditionalCultures] = useState([]);
+  const [errorMsg, setErrorMsg] = useState('');
 
   useEffect(() => {
     async function fetchSessionData() {
 
-      try {
-        const res = await fetch(`api/enrollments/${id}/sessions/new${practice ? '?practice=true' : ''}`, {
-          method: 'GET',
-          headers: {token: localStorage.token}
-        });
+      const apiUrl = `api/enrollments/${id}/sessions/new${practice ? '?practice=true' : ''}`
+      const res = await fetchData(apiUrl, {
+        method: 'GET',
+        headers: {token: localStorage.token}
+      });
 
-        const parseData = await res.json();
-        
-        setLoaded(true);
-        setSessionId(parseData.sessionId);
-        setSessionName(parseData.sessionName);
-        setDifficultyOptions(parseData.difficulties);
-        setCultureOptions(parseData.cultures);
-
-      } catch (err) {
-        console.error(err.message)
+      if (!res.isOk) {
+        setErrorMsg('network error');
+        return;
       }
+
+      const parseData = res.data;
+      
+      setLoaded(true);
+      setSessionId(parseData.sessionId);
+      setSessionName(parseData.sessionName);
+      setDifficultyOptions(parseData.difficulties);
+      setCultureOptions(parseData.cultures);
+
     } 
     
     fetchSessionData();
@@ -74,7 +79,6 @@ const Enroll = ({setAuth}) => {
   };
   
 
-  // temporary will remove  
   const cardCSS = {
     label: {
       margin: "28px 0px 16px"

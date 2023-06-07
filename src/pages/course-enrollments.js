@@ -37,8 +37,6 @@ const CourseEnrollments = ({setAuth}) => {
     )
 }
 
-  // async function grabbing the name from an api fetch call 
-  // and using get request to store data into respond variable
   async function getName() {
 
     const apiUrl = '/api/enrollments';

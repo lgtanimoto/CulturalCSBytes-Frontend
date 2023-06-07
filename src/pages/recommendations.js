@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
+import { fetchData } from './fetchData';
 import './questions.css';
 
 const Recommendations = ({setAuth}) => {
@@ -18,28 +19,32 @@ const Recommendations = ({setAuth}) => {
   const [culture, setCulture] = React.useState([]);
   const [questionSet, setQuestionSet] = React.useState([]);
   const [questionsMissed, setQuestionsMissed] = React.useState([]);
+  const [errorMsg, setErrorMsg] = useState('');
 
   async function getRecommendations() {
-    try {
-      const res = await fetch(`/api/enrollments/${id}/sessions/${sessionId}/recommendations`, {
-        method: 'GET',
-        headers: { token: localStorage.token }
-      });
+    
+    const apiUrl = `/api/enrollments/${id}/sessions/${sessionId}/recommendations`;
+    const res = await fetchData(apiUrl, {
+      method: 'GET',
+      headers: { token: localStorage.token }
+    });
 
-      const parseData = await res.json();
-      console.log(parseData);
-
-      setNickname(parseData.nickname);
-      setCorrect(parseData.correct);
-      setTotalQuestions(parseData.totalQuestions);
-      setSessionName(parseData.sessionName);
-      setCulture(parseData.resources.culture);
-      setQuestionSet(parseData.resources.questionSet);
-      setQuestionsMissed(parseData.resources.questionsMissed);
-
-    } catch (err) {
-      console.log(err.message);
+    if (!res.isOk) {
+      setErrorMsg('network error');
+      return;
     }
+
+    const parseData = res.data;
+    console.log(parseData);
+
+    setNickname(parseData.nickname);
+    setCorrect(parseData.correct);
+    setTotalQuestions(parseData.totalQuestions);
+    setSessionName(parseData.sessionName);
+    setCulture(parseData.resources.culture);
+    setQuestionSet(parseData.resources.questionSet);
+    setQuestionsMissed(parseData.resources.questionsMissed);
+
   }
 
   useEffect(() => {

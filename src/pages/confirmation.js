@@ -52,7 +52,7 @@ const Confirmation = ({setAuth}) => {
 
     } else {
       const apiUrl = `/api/enrollments/${id}/sessions`;
-      const res = await fetch(apiUrl, {
+      const res = await fetchData(apiUrl, {
         method: 'POST',
         headers: {
           'Content-type': 'application/json',

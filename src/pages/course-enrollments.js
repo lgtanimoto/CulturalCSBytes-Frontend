@@ -13,7 +13,7 @@ const CourseEnrollments = ({setAuth}) => {
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [courseData, setCourseData] = React.useState([]);
-  const [errorMsg, setErrorMsg] = useState('')
+  const [errorMsg, setErrorMsg] = useState('');
 
 
   const courseSection = ({statsClick, continueClick, id, name, completed, high, status}) =>{
@@ -53,7 +53,7 @@ const CourseEnrollments = ({setAuth}) => {
       return;
     }
 
-    const parseData = res.data
+    const parseData = res.data;
     setName(parseData.nickname);
     setUsername(parseData.username);  
 
@@ -101,7 +101,7 @@ const CourseEnrollments = ({setAuth}) => {
   // fetch's need to be inside of a useEffect(..., ....)
   async function continueClick(id, name) {
 
-    const apiUrl = `/api/enrollments/${id}/sessions/continue`
+    const apiUrl = `/api/enrollments/${id}/sessions/continue`;
     const res = await fetchData(apiUrl, {
       method: 'GET',
       headers: {
@@ -115,7 +115,7 @@ const CourseEnrollments = ({setAuth}) => {
       return;
     }
     
-    const parseData = res.data
+    const parseData = res.data;
 
     if(parseData.route === "new") {
       navigate("/enroll", {state: {id: id, name: name, practice: parseData.params ? true : false}});

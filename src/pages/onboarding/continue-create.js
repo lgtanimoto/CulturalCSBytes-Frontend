@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
+import { fetchData } from '../fetchData';
 import '../questions.css';
 
 const ContinueCreateAccount = ({setAuth}) => { 
@@ -7,8 +8,6 @@ const ContinueCreateAccount = ({setAuth}) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-
-  // creating a useState for each input 
   const [username, setUsename] = useState(location.state.name);
   const [password, setPassword] = useState(location.state.pw);
   const [nickname, setNickname] = useState("");
@@ -16,6 +15,7 @@ const ContinueCreateAccount = ({setAuth}) => {
   const [age, setAge] = useState(14);
   const [zipcode, setZipcode] = useState("");
   const [feedback, setFeedback] = useState("");
+  const [errorMsg, setErrorMsg] = useState('');
   
   // updating user's username, password, nickname, email, ... after user inputs data
   const handleUsernameChange = (event) => {
@@ -44,7 +44,6 @@ const ContinueCreateAccount = ({setAuth}) => {
     navigate("/home");
   }
 
-  // handling continue button click event 
   const continueClick = async (event) => {
     event.preventDefault();
 
@@ -55,36 +54,36 @@ const ContinueCreateAccount = ({setAuth}) => {
     } else if(zipcode === "") {
       setFeedback("Zipcode is required"); 
     } else {
-        try {
-          const body = {
-            username, 
-            password, 
-            nickname: updatedNickname, 
-            email, 
-            age, 
-            zipcode, 
-            name: location.state.name, 
-            pw: location.state.pw
-          };
-    
-          const res = await fetch("/api/authentication/register", {
-            method: "POST",
-            headers: {"Content-type": "application/json"},
-            body: JSON.stringify(body)
-          });
-    
-          const parseRes = await res.json()
-    
-          localStorage.setItem("token", parseRes.token);
-          setAuth(true);
-          console.log(parseRes)
 
-        } catch (err) {
-          console.log(err.message);
-        }
+      const body = {
+        username, 
+        password, 
+        nickname: updatedNickname, 
+        email, 
+        age, 
+        zipcode, 
+        name: location.state.name, 
+        pw: location.state.pw
+      };
+
+      const apiUrl = "/api/authentication/register";
+      const res = await fetchData(apiUrl, {
+        method: "POST",
+        headers: {"Content-type": "application/json"},
+        body: JSON.stringify(body)
+      });
+
+      if (!res.isOk) {
+        setErrorMsg('network error');
+        return;
+      }
+
+      const parseRes = res.data;
+
+      localStorage.setItem("token", parseRes.token);
+      setAuth(true);
+      console.log(parseRes)
     }
-
-      // need to get the id and initialize it 
 
   // when this section is uncommented, 
   // the navigation to enroll page throws an error probably b/c data isn't properly being transfereed from continue-create.js page to enroll.js page
@@ -94,11 +93,9 @@ const ContinueCreateAccount = ({setAuth}) => {
       //     username, nickname: document.getElementById("nickname").value,
       //   },
       // });
-
   
   };
 
-  // temporary will remove  
   const cardCSS = {
     label: {
       margin: "28px 0px 16px"

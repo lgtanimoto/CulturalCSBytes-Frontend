@@ -40,7 +40,6 @@ const CourseEnrollments = ({setAuth}) => {
   async function getName() {
 
     const apiUrl = '/api/enrollments';
-
     const res = await fetchData(apiUrl, {
       method: 'GET',
       headers: { token: localStorage.token },

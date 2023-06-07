@@ -80,6 +80,7 @@ const Metrics = ({setAuth}) => {
 
   useEffect(() => {
     getMetrics();
+    // eslint-disable-next-line
   }, [])
 
 

@@ -54,7 +54,6 @@ const ContinueCreateAccount = ({setAuth}) => {
     } else if(zipcode === "") {
       setFeedback("Zipcode is required"); 
     } else {
-
       const body = {
         username, 
         password, 
@@ -79,10 +78,15 @@ const ContinueCreateAccount = ({setAuth}) => {
       }
 
       const parseRes = res.data;
-
+    
+      if (parseRes.error === "User already exists.") {
+        setFeedback("Username already exists.");
+      } 
+    
       localStorage.setItem("token", parseRes.token);
       setAuth(true);
       console.log(parseRes)
+
     }
 
   // when this section is uncommented, 

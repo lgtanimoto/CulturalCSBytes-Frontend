@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
 import './questions.css';
 import parse from 'html-react-parser';
@@ -12,18 +13,18 @@ const Questions = ({setAuth}) => {
   const id = location.state.id;
   const sessionId = location.state.sessionId;
   const enrollmentName = location.state.name;
-  const [order, setOrder] = React.useState(location.state.order);
-  const [numOfQuestions, setNumOfQuestions] = React.useState(20);
+  const [order, setOrder] = useState(location.state.order);
+  const [numOfQuestions, setNumOfQuestions] = useState(20);
 
-  const [curQuestion, setCurQuestion] = React.useState("");
-  const [answer1, setAnswer1] = React.useState("Answer 1"); 
-  const [answer2, setAnswer2] = React.useState("Answer 2"); 
-  const [answer3, setAnswer3] = React.useState("Answer 3"); 
-  const [answer4, setAnswer4] = React.useState("Answer 4"); 
-  const [correctAnswer, setCorrectAnswer] = React.useState(0); 
-  const [explanation, setExplanation] = React.useState("");
+  const [curQuestion, setCurQuestion] = useState("");
+  const [answer1, setAnswer1] = useState("Answer 1"); 
+  const [answer2, setAnswer2] = useState("Answer 2"); 
+  const [answer3, setAnswer3] = useState("Answer 3"); 
+  const [answer4, setAnswer4] = useState("Answer 4"); 
+  const [correctAnswer, setCorrectAnswer] = useState(0); 
+  const [explanation, setExplanation] = useState("");
   
-  const [answered, setAnswered] = React.useState(false);
+  const [answered, setAnswered] = useState(false);
 
   async function getQuestion() {
     try {

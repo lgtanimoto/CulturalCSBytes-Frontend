@@ -13,6 +13,7 @@ const Metrics = ({setAuth}) => {
   const [username, setUsername] = React.useState("");
   const [nickname, setNickname] = React.useState("");
   const [sessions, setSessions] = React.useState([]);
+  const [errorMsg, setErrorMsg] = useState('');
 
 
   const metricSection = ({name, date, cultures, correct, totalQuestions}) => {
@@ -41,22 +42,26 @@ const Metrics = ({setAuth}) => {
   }     
 
   async function getMetrics() {
-    try {
-      const res = await fetch(`/api/enrollments/${id}`, {
-        method: 'GET',
-        headers: { token: localStorage.token }
-      });
-        
-      const parseData = await res.json();
-      console.log(parseData);
 
-      setUsername(parseData.username);
-      setNickname(parseData.nickname);
-      setSessions(parseData.sessions);
+    const apiUrl = `/api/enrollments/${id}`;
+    const res = await fetch(apiUrl, {
+      method: 'GET',
+      headers: { token: localStorage.token }
+    });
 
-    } catch (err) {
-      console.log(err.message);
+
+    if (!res.isOk) {
+      setErrorMsg('network error');
+      return;
     }
+
+    const parseData = res.data;
+    console.log(parseData);
+
+    setUsername(parseData.username);
+    setNickname(parseData.nickname);
+    setSessions(parseData.sessions);
+
   }
 
   const headerSection = () => {

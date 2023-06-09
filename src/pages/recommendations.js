@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
+import { fetchData } from './fetchData';
 import './questions.css';
 
 const Recommendations = ({setAuth}) => {
@@ -14,38 +15,40 @@ const Recommendations = ({setAuth}) => {
   const sessionId = location.state.sessionId;
   const enrollmentName = location.state.enrollmentName;
 
-  // setting all the initial states to be used later ------------------------------
-  const [nickname, setNickname] = useState("");
-  const [correct, setCorrect] = useState("");
-  const [totalQuestions, setTotalQuestions] = useState("");
-  const [sessionName, setSessionName] = useState("");
-  const [culture, setCulture] = useState([]);
-  const [questionSet, setQuestionSet] = useState([]);
-  const [questionsMissed, setQuestionsMissed] = useState([]);
+  const [nickname, setNickname] = React.useState("");
+  const [correct, setCorrect] = React.useState("");
+  const [totalQuestions, setTotalQuestions] = React.useState("");
+  const [sessionName, setSessionName] = React.useState("");
+  const [culture, setCulture] = React.useState([]);
+  const [questionSet, setQuestionSet] = React.useState([]);
+  const [questionsMissed, setQuestionsMissed] = React.useState([]);
+  const [errorMsg, setErrorMsg] = useState('');
 
   // fetch function to call to backend to get info to fill all the empty states -------------------------------
   async function getRecommendations() {
-    try {
-      const res = await fetch(`/api/enrollments/${id}/sessions/${sessionId}/recommendations`, {
-        method: 'GET',
-        headers: { token: localStorage.token }
-      });
+    
+    const apiUrl = `/api/enrollments/${id}/sessions/${sessionId}/recommendations`;
+    const res = await fetchData(apiUrl, {
+      method: 'GET',
+      headers: { token: localStorage.token }
+    });
 
-      const parseData = await res.json();
-      console.log(parseData);
-
-      // filling in the states with the fetched data from json request
-      setNickname(parseData.nickname);
-      setCorrect(parseData.correct);
-      setTotalQuestions(parseData.totalQuestions);
-      setSessionName(parseData.sessionName);
-      setCulture(parseData.resources.culture);
-      setQuestionSet(parseData.resources.questionSet);
-      setQuestionsMissed(parseData.resources.questionsMissed);
-
-    } catch (err) {
-      console.log(err.message);
+    if (!res.isOk) {
+      setErrorMsg('network error');
+      return;
     }
+
+    const parseData = res.data;
+    console.log(parseData);
+
+    setNickname(parseData.nickname);
+    setCorrect(parseData.correct);
+    setTotalQuestions(parseData.totalQuestions);
+    setSessionName(parseData.sessionName);
+    setCulture(parseData.resources.culture);
+    setQuestionSet(parseData.resources.questionSet);
+    setQuestionsMissed(parseData.resources.questionsMissed);
+
   }
 
   // dont know what this is right now??? --------------------

@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
+import { fetchData } from './fetchData';
 import './questions.css';
 
 const Confirmation = ({setAuth}) => {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const [errorMsg, setErrorMsg] = useState('');
 
   const id = location.state.id;
   const sessionId = location.state.sessionId;
@@ -39,45 +41,53 @@ const Confirmation = ({setAuth}) => {
   const ok = async (event) => {
     event.preventDefault();
 
-    try {
-      const body = {
-        preferredCulture,
-        difficulty,
-        additionalCultures
-      };
+    const body = {
+      preferredCulture,
+      difficulty,
+      additionalCultures
+    };
 
-      console.log(body);
-      if(sessionId !== false) {
-        const response = await fetch(`/api/enrollments/${id}/sessions/${sessionId}`, {
-          method: 'PATCH',
-          headers: {
-            "Content-type": "application/json",
-            token: localStorage.token
-          },
-          body: JSON.stringify(body)
-        });
+    console.log(body);
+    if(sessionId !== false) {
+      const apiUrl = `/api/enrollments/${id}/sessions/${sessionId}`;
+      const res = await fetchData(apiUrl, {
+        method: 'PATCH',
+        headers: {
+          "Content-type": "application/json",
+          token: localStorage.token
+        },
+        body: JSON.stringify(body)
+      });
 
-        const parseRes = await response.json();
-        console.log(parseRes);
-
-        navigate("/questions", {state: {id: id, sessionId: sessionId, order: 1, name: name}});
-      } else {
-        const response = await fetch(`/api/enrollments/${id}/sessions`, {
-          method: 'POST',
-          headers: {
-            'Content-type': 'application/json',
-            token: localStorage.token
-          },
-          body: JSON.stringify(body)
-        });
-
-        const parseRes = await response.json();
-        console.log(parseRes);
-
-        navigate("/questions", {state: {id: id, sessionId: parseRes.sessionId, order: 1, name: name}});
+      if (!res.isOk) {
+        setErrorMsg('network error');
+        return;
       }
-    } catch (err) {
-      console.log(err.message);
+
+      const parseRes = res.data;
+      console.log(parseRes);
+      navigate("/questions", {state: {id: id, sessionId: sessionId, order: 1, name: name}});
+
+    } else {
+      const apiUrl = `/api/enrollments/${id}/sessions`;
+      const res = await fetchData(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json',
+          token: localStorage.token
+        },
+        body: JSON.stringify(body)
+      });
+
+      if (!res.isOk) {
+        setErrorMsg('network error');
+        return;
+      }
+
+      const parseRes = res.data;
+      console.log(parseRes);
+      navigate("/questions", {state: {id: id, sessionId: parseRes.sessionId, order: 1, name: name}});
+
     }
   }
 

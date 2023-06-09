@@ -25,10 +25,6 @@ const CreateAccount = ({setAuth}) => {
     navigate("/home");
   }
 
-  //checks to make sure username is not blank, and is unique
-  //checks to make sure the password is 8 characters or longer
-  //checks to make sure passwords match
-
   const continueClick = async (event) => {
     event.preventDefault();
     if(username === "") {
@@ -43,55 +39,55 @@ const CreateAccount = ({setAuth}) => {
 
   };
 
-    const cardCSS = {
-      label: {
-        margin: "28px 0px 16px"
-      }
+  const cardCSS = {
+    label: {
+      margin: "28px 0px 16px"
     }
+  }
 
-    const usernameSection = () => {
-      return (
-        <>
-          <div className="item">
-            <label for="username" style={cardCSS.label}>Username:</label>
-            <input id="username" type="text" name="username" value={username} onChange={handleUsernameChange}></input>
-          </div>
-        </>
-      )
-    }
+  const usernameSection = () => {
+    return (
+      <>
+        <div className="item">
+          <label for="username" style={cardCSS.label}>Username:</label>
+          <input id="username" type="text" name="username" value={username} onChange={handleUsernameChange}></input>
+        </div>
+      </>
+    )
+  }
 
-    const passwordSection = () => {
-      return (
-        <>
-          <div className="item">
-            <label for="password" style={cardCSS.label}>Password:</label>
-            <input id="password" type="password" name="password" value={password} onChange={handlePasswordChange}></input>
-          </div>
-        </>
-      )
-    }
+  const passwordSection = () => {
+    return (
+      <>
+        <div className="item">
+          <label for="password" style={cardCSS.label}>Password:</label>
+          <input id="password" type="password" name="password" value={password} onChange={handlePasswordChange}></input>
+        </div>
+      </>
+    )
+  }
 
-    const confirmPasswordSection = () => {
-      return (
-        <>
-          <div className="item">
-            <label for="confirm-password" style={cardCSS.label}>Confirm Password:</label>
-            <input id="confirm-password" type="password" value={confirmPassword} onChange={handleConfirmPasswordChange}></input>
-          </div>
-        </>
-      )
-    }
+  const confirmPasswordSection = () => {
+    return (
+      <>
+        <div className="item">
+          <label for="confirm-password" style={cardCSS.label}>Confirm Password:</label>
+          <input id="confirm-password" type="password" value={confirmPassword} onChange={handleConfirmPasswordChange}></input>
+        </div>
+      </>
+    )
+  }
 
-    const buttonSection = () => {
-      return (
-        <>
-          <div className="item">
-            <button onClick={goHome}>Cancel</button>
-            <button onClick={continueClick}>Continue</button>
-          </div>
-        </>
-      )
-    }
+  const buttonSection = () => {
+    return (
+      <>
+        <div className="item">
+          <button onClick={goHome}>Cancel</button>
+          <button onClick={continueClick}>Continue</button>
+        </div>
+      </>
+    )
+  }
 
   return(
     <form onSubmit={continueClick}>

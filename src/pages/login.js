@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
+import { fetchData } from './fetchData';
 import './questions.css';
 
 const Login = ({setAuth}) => {
@@ -9,6 +10,7 @@ const Login = ({setAuth}) => {
   const [username, setUsename] = useState("");
   const [password, setPassword] = useState("");
   const [feedback, setFeedback] = useState("");
+  const [errorMsg, setErrorMsg] = useState('');
 
   const handleUsernameChange = (event) => {
     setUsename(event.target.value);
@@ -24,30 +26,34 @@ const Login = ({setAuth}) => {
   //makes backend call to login, navigates to enrollments if successful, displays message if not
   const continueClick = async (event) => {
     event.preventDefault();
-    try {
-      const body = { username, password };
-      const res = await fetch("/api/authentication/login", {
-        method: "POST",
-        headers: {"Content-type": "application/json"},
-        body: JSON.stringify(body)
-      });
+    
+    const body = { username, password };
+    const apiUrl = "/api/authentication/login";
+    const res = await fetchData(apiUrl, {
+      method: "POST",
+      headers: {"Content-type": "application/json"},
+      body: JSON.stringify(body)
+    });
 
-      const parseRes = await res.json();
-
-      if (parseRes.token) {
-        localStorage.setItem("token", parseRes.token);
-        setAuth(true);
-      } else if(username === "") {
-        setFeedback("Username is required"); 
-      } else if(password === "") {
-          setFeedback("Password is required"); 
-      } else {
-        setAuth(false);
-        setFeedback("Username or password is incorrect");
-      }
-    } catch (err) {
-      console.error(err.message);
+    if (!res.isOk) {
+      setErrorMsg('network error');
+      return;
     }
+
+    const parseRes = res.data;
+
+    if (parseRes.token) {
+      localStorage.setItem("token", parseRes.token);
+      setAuth(true);
+    } else if(username === "") {
+      setFeedback("Username is required"); 
+    } else if(password === "") {
+        setFeedback("Password is required"); 
+    } else {
+      setAuth(false);
+      setFeedback("Username or password is incorrect");
+    }
+    
   }
 
   const cardCSS = {

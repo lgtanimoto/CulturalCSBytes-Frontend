@@ -1,5 +1,7 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
+import { fetchData } from './fetchData';
 import './questions.css';
 
 // add fetchImproved as util.js class 
@@ -20,37 +22,30 @@ const Enroll = ({setAuth}) => {
   const [selectedDifficulty, setSelectedDifficulty] = useState('Medium');
   const [selectedCulture, setSelectedCulture] = useState('Default Culture');
   const [additionalCultures, setAdditionalCultures] = useState([]);
+  const [errorMsg, setErrorMsg] = useState('');
 
   useEffect(() => {
     async function fetchSessionData() {
 
-      // make an id check
-      if (!id) { 
-        console.error("id")
+      const apiUrl = `api/enrollments/${id}/sessions/new${practice ? '?practice=true' : ''}`
+      const res = await fetchData(apiUrl, {
+        method: 'GET',
+        headers: {token: localStorage.token}
+      });
+
+      if (!res.isOk) {
+        setErrorMsg('network error');
+        return;
       }
 
-      try {
-        const res = await fetch(`api/enrollments/${id}/sessions/new${practice ? '?practice=true' : ''}`, {
-          method: 'GET',
-          headers: {token: localStorage.token}
-        });
+      const parseData = res.data;
+      
+      setLoaded(true);
+      setSessionId(parseData.sessionId);
+      setSessionName(parseData.sessionName);
+      setDifficultyOptions(parseData.difficulties);
+      setCultureOptions(parseData.cultures);
 
-        console.log(res)
-        const parseData = await res.json();
-        console.log(parseData);
-        console.log(parseData.cultures);
-        
-        setLoaded(true);
-        setSessionId(parseData.sessionId);
-        setSessionName(parseData.sessionName);
-        setDifficultyOptions(parseData.difficulties);
-        setCultureOptions(parseData.cultures);
-
-        console.log(parseData.cultures);
-        console.log(parseData);
-      } catch (err) {
-        console.error(err.message)
-      }
     } 
     
     fetchSessionData();
@@ -80,14 +75,10 @@ const Enroll = ({setAuth}) => {
   };
 
   const ok = async event => {
-    console.log(selectedDifficulty);
-    console.log(selectedCulture);
-    console.log(additionalCultures);
     navigate("/confirmation", {state: {id: id, sessionId: sessionId, selectedDifficulty: selectedDifficulty, selectedCulture: selectedCulture, additionalCultures: additionalCultures, name: name}});
   };
   
 
-  // temporary will remove  
   const cardCSS = {
     label: {
       margin: "28px 0px 16px"

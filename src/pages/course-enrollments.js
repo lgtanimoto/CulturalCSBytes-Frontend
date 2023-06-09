@@ -78,6 +78,18 @@ const CourseEnrollments = ({setAuth}) => {
   };
   
 
+  const topSection = () => {
+    return (
+      <>
+        <h1>Course Enrollments</h1>
+          <div className='item'>
+            <p>Username: {username}</p>
+            <p>Nickname: {name}</p>
+          </div>
+      </>
+    )
+  }
+
   const courseHeaderSection = () => {
     return (
         <thead>
@@ -89,6 +101,41 @@ const CourseEnrollments = ({setAuth}) => {
             </tr>
         </thead>
     )
+}
+
+const tableSection = () => {
+  return (
+    <>
+      <table>
+        {courseHeaderSection()}
+            {courseData.map(
+             (course, idx) => {
+               if (courseData != null) {
+                 return courseSection({
+                 key: idx,
+                 id: course.id,
+                 name: course.name,
+                 completed: course.completed,
+                 high: course.high,
+                 status: course.status,
+                 statsClick: statsClick,
+                 continueClick: continueClick });
+               } else {
+                 return (<div />);
+               }
+             }
+           )}
+      </table>
+    </>
+  )
+}
+
+const buttonSection = () => {
+  return (
+    <>
+      <button onClick={() => setAuth(false)}>Logout</button>
+    </>
+  )
 }
 
   useEffect(() => {
@@ -129,34 +176,9 @@ const CourseEnrollments = ({setAuth}) => {
   //TO DO: get nickname from backend on login
   return(
     <div className='tables_center'>
-      <h1>Course Enrollments</h1>
-      <div className='item'>
-        <p>Username: {username}</p>
-        <p>Nickname: {name}</p>
-      </div>
-      {/* <div id="options"> */}
-      <table>
-        {courseHeaderSection()}
-            {courseData.map(
-             (course, idx) => {
-               if (courseData != null) {
-                 return courseSection({
-                 key: idx,
-                 id: course.id,
-                 name: course.name,
-                 completed: course.completed,
-                 high: course.high,
-                 status: course.status,
-                 statsClick: statsClick,
-                 continueClick: continueClick });
-               } else {
-                 return (<div />);
-               }
-             }
-           )}
-           </table>
-      {/* </div> */}
-      <button onClick={() => setAuth(false)}>Logout</button>
+          {topSection()}
+          {tableSection()}
+          {buttonSection()}
     </div>
   )
 }

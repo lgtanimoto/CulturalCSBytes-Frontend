@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import './questions.css';
 import parse from 'html-react-parser';
 import { Buffer } from 'buffer';
+import { fetchData } from './fetchData';
 
 const Questions = ({setAuth}) => {
 
@@ -16,34 +17,38 @@ const Questions = ({setAuth}) => {
   const [order, setOrder] = useState(location.state.order);
   const [numOfQuestions, setNumOfQuestions] = useState(20);
 
-  const [curQuestion, setCurQuestion] = useState("");
-  const [answer1, setAnswer1] = useState("Answer 1"); 
-  const [answer2, setAnswer2] = useState("Answer 2"); 
-  const [answer3, setAnswer3] = useState("Answer 3"); 
-  const [answer4, setAnswer4] = useState("Answer 4"); 
-  const [correctAnswer, setCorrectAnswer] = useState(0); 
-  const [explanation, setExplanation] = useState("");
+  const [curQuestion, setCurQuestion] = React.useState("");
+  const [answer1, setAnswer1] = React.useState("Answer 1"); 
+  const [answer2, setAnswer2] = React.useState("Answer 2"); 
+  const [answer3, setAnswer3] = React.useState("Answer 3"); 
+  const [answer4, setAnswer4] = React.useState("Answer 4"); 
+  const [correctAnswer, setCorrectAnswer] = React.useState(0); 
+  const [explanation, setExplanation] = React.useState("");
+  const [errorMsg, setErrorMsg] = useState('');
   
   const [answered, setAnswered] = useState(false);
 
   async function getQuestion() {
-    try {
-      console.log("id = " + id);
-      console.log("sessionId = " + sessionId);
-      
-      const res = await fetch(`/api/enrollments/${id}/sessions/${sessionId}/questions/${order}`, {
-        method: 'GET',
-        headers: { token: localStorage.token }
-      });
-      
-      const parseData = await res.json();
-      console.log(parseData);
 
-      return parseData;
-      
-    } catch (err) {
-      console.error(err.message);
+    console.log("id = " + id);
+    console.log("sessionId = " + sessionId);
+    
+    const apiUrl = `/api/enrollments/${id}/sessions/${sessionId}/questions/${order}`;
+    const res = await fetchData(apiUrl, {
+      method: 'GET',
+      headers: { token: localStorage.token }
+    });
+
+
+    if (!res.isOk) {
+      setErrorMsg('network error');
+      return;
     }
+
+    const parseData = res.data;
+    console.log(parseData);
+
+    return parseData; 
   }
 
   function displayQuestions(parseData) {
@@ -84,53 +89,53 @@ const Questions = ({setAuth}) => {
   }
 
   async function submitAnswer(answer) {
-    try {
-      const body = {answer};
+    const body = {answer};
 
-      const response = await fetch(`/api/enrollments/${id}/sessions/${sessionId}/questions/${order}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-type': 'application/json',
-          token: localStorage.token
-        },
-        body: JSON.stringify(body)
-      });
-      
-      const parseRes = await response.json();
+    const apiUrl = `/api/enrollments/${id}/sessions/${sessionId}/questions/${order}`;
+    const res = await fetchData(apiUrl, {
+      method: 'PATCH',
+      headers: {
+        'Content-type': 'application/json',
+        token: localStorage.token
+      },
+      body: JSON.stringify(body)
+    });
 
-      console.log(parseRes);
-
-      setAnswered(true);
-    } catch (err) {
-      console.log(err.message);
+    if (!res.isOk) {
+      setErrorMsg('network error');
+      return;
     }
+
+    const parseRes = res.data;
+    console.log(parseRes);
+    setAnswered(true);
   }
 
   async function continueSession() {
-    try {
-      const body = { next: true };
+    const body = { next: true };
 
-      const response = await fetch(`/api/enrollments/${id}/sessions/${sessionId}/questions/${order}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-type': 'application/json',
-          token: localStorage.token
-        },
-        body: JSON.stringify(body)
-      });
-      
-      const parseRes = await response.json();
+    const apiUrl = `/api/enrollments/${id}/sessions/${sessionId}/questions/${order}`;
+    const response = await fetchData(apiUrl, {
+      method: 'PATCH',
+      headers: {
+        'Content-type': 'application/json',
+        token: localStorage.token
+      },
+      body: JSON.stringify(body)
+    });
 
-      console.log(parseRes);
-
-    } catch (err) {
-      console.log(err.message);
+    if (!res.isOk) {
+      setErrorMsg('network error');
+      return;
     }
+
+    const parseData = res.data;
+    console.log(parseRes);
   }
 
   useEffect(() => {
     getQuestion().then((parseData) => displayQuestions(parseData));
-  })
+  }, [])
 
   function answerClick(answer) {
     if(answered === false) {

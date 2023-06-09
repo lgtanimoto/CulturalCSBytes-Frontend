@@ -51,6 +51,7 @@ const Recommendations = ({setAuth}) => {
   // dont know what this is right now??? --------------------
   useEffect(() => {
     getRecommendations()
+    // eslint-disable-next-line
   }, []);
 
   

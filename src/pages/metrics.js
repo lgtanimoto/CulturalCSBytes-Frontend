@@ -14,7 +14,7 @@ const Metrics = ({setAuth}) => {
   const [username, setUsername] = React.useState("");
   const [nickname, setNickname] = React.useState("");
   const [sessions, setSessions] = React.useState([]);
-  const [errorMsg, setErrorMsg] = useState('');
+  const [errorMsg, setErrorMsg] = React.useState('');
 
 
   const metricSection = ({name, date, cultures, correct, totalQuestions}) => {

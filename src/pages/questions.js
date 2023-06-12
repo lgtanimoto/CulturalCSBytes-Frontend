@@ -115,7 +115,7 @@ const Questions = ({setAuth}) => {
     const body = { next: true };
 
     const apiUrl = `/api/enrollments/${id}/sessions/${sessionId}/questions/${order}`;
-    const response = await fetchData(apiUrl, {
+    const res = await fetchData(apiUrl, {
       method: 'PATCH',
       headers: {
         'Content-type': 'application/json',
@@ -129,7 +129,7 @@ const Questions = ({setAuth}) => {
       return;
     }
 
-    const parseData = res.data;
+    const parseRes = res.data;
     console.log(parseRes);
   }
 

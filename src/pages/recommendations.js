@@ -53,8 +53,9 @@ const Recommendations = ({setAuth}) => {
 
   // dont know what this is right now??? --------------------
   useEffect(() => {
-    getRecommendations();
-  }, [])
+    getRecommendations()
+    // eslint-disable-next-line
+  }, []);
 
   
  //  welcome section o ----------------------

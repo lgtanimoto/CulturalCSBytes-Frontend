@@ -65,6 +65,21 @@ const Metrics = ({setAuth}) => {
 
   }
 
+  const topSection = () => {
+    return (
+      <>
+        <div id="welcome">
+          <h1>Enrollment Metrics</h1>
+        </div>
+        <div className="item">
+          <p>Username: {username}</p>
+          <p>Nickname: {nickname}</p>
+          <p>Enrollment Name: {name}</p>
+        </div>
+      </>
+    )
+  }
+
   const headerSection = () => {
     return (
         <thead>
@@ -78,28 +93,10 @@ const Metrics = ({setAuth}) => {
     )
 }
 
-  useEffect(() => {
-    getMetrics();
-    // eslint-disable-next-line
-  }, [])
-
-
-  const goBack = () => {
-    navigate("/course-enrollments");
-  }
-
+const tableSection = () => {
   return (
-    <div className="tables_center">
-      <div id="welcome">
-        <h1>Enrollment Metrics</h1>
-      </div>
-      <div className="item">
-        <p>Username: {username}</p>
-        <p>Nickname: {nickname}</p>
-        <p>Enrollment Name: {name}</p>
-      </div>
-      <div>
-        <table className="table">
+    <div>
+      <table className="table">
         {headerSection()}
         {sessions?.map(
             (session, idx) => {
@@ -118,9 +115,34 @@ const Metrics = ({setAuth}) => {
             }
             }
         )}
-        </table>
-      </div>
+      </table>
+    </div>
+  )
+}
+
+const buttonSection = () => {
+  return (
+    <>
       <button onClick={goBack}>Back to Courses</button>
+    </>
+  )
+}
+
+  useEffect(() => {
+    getMetrics();
+    // eslint-disable-next-line
+  }, [])
+
+
+  const goBack = () => {
+    navigate("/course-enrollments");
+  }
+
+  return (
+    <div className="tables_center">
+      {topSection()}
+      {tableSection()}
+      {buttonSection()}
     </div>
   );
 }

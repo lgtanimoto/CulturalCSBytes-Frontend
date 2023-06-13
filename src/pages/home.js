@@ -38,9 +38,9 @@ function Home() {
         {/* <button id="createAccount" onClick={createAccount} >Create Account</button> */}
         {/* <button id="about" onClick={about} >About</button> */}
 
-        <Button id='login' onClick={login} buttonText='Login'/>
-        <Button id="createAccount" onClick={createAccount} buttonText='Create Account'/>
-        <Button id='about' onClick={about} buttonText='About'/>
+        <Button id='login' onClick={login} children='Login'/>
+        <Button id="createAccount" onClick={createAccount} children='Create Account'/>
+        <Button id='about' onClick={about} children='About'/>
         
       </>
     )

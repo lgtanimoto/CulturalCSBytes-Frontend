@@ -25,12 +25,14 @@ const CourseEnrollments = ({setAuth}) => {
                 <td>{completed}</td>
                 <td>{high}&#37;</td>
                 <td>{status}</td>
-                <td className="stats_cont"><button type="button" onClick={() => statsClick(id, name)}>
-            Stats
-            </button>
-            <button  type="button" onClick={() => continueClick(id, name)}>
-            Continue
-            </button></td>
+                <td className="stats_cont">
+                  <button type="button" disabled={status === "Not started"} onClick={() => statsClick(id, name)}>
+                    Stats
+                  </button>
+                  <button type="button" onClick={() => continueClick(id, name)}>
+                    {status === "Not started" ? "Start" : "Continue"}
+                  </button>
+                </td>
             </tr>
           </tbody>
         // </div>

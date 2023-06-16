@@ -1,34 +1,32 @@
-import React, { Component } from 'react';
-import './questions.css';
+// import React from 'react';
+// import './questions.css';
 
-class Course extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            id: this.props.id,
-            name: this.props.name,
-            completed: this.props.completed,
-            high: this.props.high,
-            status: this.props.status
-        };
-    }
+// const Course = ({statsClick, continueClick, id, name, completed, high, status}) =>{
 
-    render() {
-        return (
-            <div className="course">
-                <p>{this.props.name}</p>
-                <p>Completed: {this.props.completed}</p>
-                <p>High Score: {this.props.high}</p>
-                <p>Status: {this.props.status}</p>
-                <button type="button" onClick={() => this.props.statsClick(this.props.id, this.props.name)}>
-                    Stats
-                </button>
-                <button type="button" onClick={() => this.props.continueClick(this.props.id, this.props.name)}>
-                    Continue
-                </button>
-            </div>
-        )
-    }
-}
+//     return (
+//         <div className="course">
+//             <table>
+//             <tr>
+//                 <th>Course</th>
+//                 <th>Completed</th>
+//                 <th>High Score</th>
+//                 <th>Status</th>
+//             </tr>
+//             <tr>
+//                 <td>{name}</td>
+//                 <td>{completed}</td>
+//                 <td>{high}%</td>
+//                 <td>{status}</td>
+//             </tr>
+//             </table>
+//             <button type="button" onClick={() => statsClick(id, name)}>
+//                 Stats
+//             </button>
+//             <button type="button" onClick={() => continueClick(id, name)}>
+//                 Continue
+//             </button>
+//         </div>
+//     )
+// }
 
-export default Course;
+// export default Course;
